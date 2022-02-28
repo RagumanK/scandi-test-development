@@ -1,0 +1,14 @@
+.Menu {
+    &-SubCategoriesWrapper {
+        opacity: 0.95;
+        box-shadow: rgba(0, 24, 49, 0.8) 0 30px 80px;
+    }
+
+    &-Overlay {
+        display: none;
+    }
+
+    &-ItemCaption {
+        color: blue;
+    }
+}
