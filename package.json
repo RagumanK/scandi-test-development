@@ -8,6 +8,8 @@
         "@scandipwa/eslint-config": "0.1.36",
         "@tilework/mosaic": "0.1.4",
         "@tilework/mosaic-craco": "0.0.5",
+        "google-maps-react": "^2.0.6",
+        "page-builder": "file:packages/page-builder",
         "postcss": "8.4.5"
     },
     "scandipwa": {
@@ -16,11 +18,15 @@
             "en_US": true
         },
         "parentTheme": "@scandipwa/scandipwa",
-        "extensions": {}
+        "extensions": {
+            "packages/page-builder": true
+        }
     },
     "scripts": {
         "start": "scandipwa-scripts start",
-        "build": "scandipwa-scripts build"
+        "build": "scandipwa-scripts build",
+        "postinstall": "scandipwa-scripts link",
+        "postupdate": "scandipwa-scripts link"
     },
     "browserslist": {
         "production": [
@@ -37,5 +43,5 @@
     "eslintConfig": {
         "extends": "@scandipwa"
     },
-    "proxy": "https://demo100-ors-1588667385-csa-hcx.scandipwa.cloud/"
+    "proxy": "https://magento.aayke.com/"
 }
