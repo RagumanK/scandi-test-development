@@ -28,158 +28,62 @@ export class PriceBreakupContainer extends PureComponent {
 
   };
 
-  async restApiCall(id, sku) {
-      const payload = {
-          param: {
-              product_id: id,
-              sku
-          }
-      };
-
-      console.log(payload);
-      const response = await fetch('https://magento.aayke.com/rest/V1/pricebreakup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-      });
-      const data = await response.json();
-      return Promise.resolve(data);
+  componentDidMount() {
+      // eslint-disable-next-line react/destructuring-assignment
+      this.restApiCall(this.props.product.id);
   }
 
-  generatePriceBreakupData(product) {
-      console.log(product);
-      // eslint-disable-next-line prefer-const
-      let arr = {};
-      //   this.restApiCall(product.id, product.sku).then(
-      //       /** @namespace myApp/Component/PriceBreakup/Container/PriceBreakupContainer/generatePriceBreakupData/restApiCall/then */
-      //       (value) => {
-      //           arr.data = value;
-      //       }
-      //   );
-      arr.data = {
-          metal: {
-              values: [
-                  {
-                      name: 'Yellow Gold 18K',
-                      rate: '4350',
-                      weight: '30.72',
-                      value: 133632,
-                      discount: 10,
-                      fval: 120268.8
-                  },
-                  {
-                      name: 'Yellow Gold 22K',
-                      rate: '4420',
-                      weight: '8.16',
-                      value: 36067.2,
-                      discount: 10,
-                      fval: 32460.48
-                  }
-              ],
-              total_metal_value: 169699.2
-          },
-          diamond: {
-              values: [
-                  {
-                      name: 'Yellow Gold 18K',
-                      rate: '4350',
-                      weight: '30.72',
-                      value: 133632,
-                      discount: 10,
-                      fval: 120268.8
-                  },
-                  {
-                      name: 'Yellow Gold 22K',
-                      rate: '4420',
-                      weight: '8.16',
-                      value: 36067.2,
-                      discount: 10,
-                      fval: 32460.48
-                  }
-              ],
-              total_metal_value: 169699.2
-          },
-          stone: {
-              values: [
-                  {
-                      name: 'Yellow Gold 18K',
-                      rate: '4350',
-                      weight: '30.72',
-                      value: 133632,
-                      discount: 10,
-                      fval: 120268.8
-                  },
-                  {
-                      name: 'Yellow Gold 22K',
-                      rate: '4420',
-                      weight: '8.16',
-                      value: 36067.2,
-                      discount: 10,
-                      fval: 32460.48
-                  }
-              ],
-              total_metal_value: 169699.2
-          },
-          making_charges: 1010,
-          subtotal: 1010,
-          grand_total: 101010,
-          type: 'simple',
-          name: 'Pride Diamond Necklace'
-      };
-
-      const { attributes } = product;
-      let metalAttributes = Object.keys(attributes).map((item) => {
-          if (/(metal_)\d$/gm.test(item)) {
-              return {
-                  name: attributes[`metal_${item.split('_')[1]}`]['attribute_value'],
-                  weight: attributes[`metal_${item.split('_')[1]}_weight`]['attribute_value'],
-                  rate: attributes[`metal_${item.split('_')[1]}_rate`]['attribute_value'],
-                  // eslint-disable-next-line max-len
-                  value: attributes[`metal_${item.split('_')[1]}_rate`]['attribute_value'] * attributes[`metal_${item.split('_')[1]}_weight`]['attribute_value']
-              };
-          }
-
-          return null;
-      });
-      let diamondAttributes = Object.keys(attributes).map((item) => {
-          if (/(diamond_)\d(_name)/gm.test(item)) {
-              return {
-                  name: attributes[`diamond_${item.split('_')[1]}_name`]['attribute_value'],
-                  weight: attributes[`diamond_${item.split('_')[1]}_weight`]['attribute_value'],
-                  rate: attributes[`diamond_${item.split('_')[1]}_rate`]['attribute_value'],
-                  // eslint-disable-next-line max-len
-                  value: attributes[`diamond_${item.split('_')[1]}_rate`]['attribute_value'] * attributes[`diamond_${item.split('_')[1]}_weight`]['attribute_value']
-              };
-          }
-
-          return null;
-      });
-
-      metalAttributes = metalAttributes.filter((e) => e != null);
-      diamondAttributes = diamondAttributes.filter((e) => e != null);
-      //   stoneAttributes = stoneAttributes.filter((e) => e != null);
-
-      if (metalAttributes.length > 0) {
-          arr.hasMetalValues = true;
-          let totalMetalValue = 0;
-          metalAttributes.forEach((item) => {
-              totalMetalValue += parseFloat(item.value);
-          });
-          arr.metalAttributes = metalAttributes;
-          arr.totalMetalValue = totalMetalValue;
-      }
-      if (diamondAttributes.length > 0) {
-          arr.hasDaimondlValues = true;
-          let totalDaimondValue = 0;
-          diamondAttributes.forEach((item) => {
-              totalDaimondValue += parseFloat(item.value);
-          });
-          arr.diamondAttributes = diamondAttributes;
-          arr.totalDaimondValue = totalDaimondValue;
-      }
-
-      return arr;
+  componentDidUpdate(prevProps) {
+      // eslint-disable-next-line react/destructuring-assignment
+      console.log(this.props.product, prevProps.product);
   }
+
+  __construct(props) {
+      super.__construct(props);
+      this.state = { dataLoaded: false, data: {} };
+  }
+
+  async restApiCall(id) {
+      try {
+          // eslint-disable-next-line quotes
+          const response = await fetch(`https://magento.aayke.com/rest/V1/pricebreakup?param[product_id]=${id}`, {
+          // eslint-disable-next-line quotes
+          // const response = await fetch(`https://catfact.ninja/fact`, {
+              method: 'GET',
+              headers: { 'Content-Type': 'application/json' }
+          });
+          const data = await response.json();
+          this.setState({
+          // eslint-disable-next-line react/no-unused-state
+              dataLoaded: true,
+              data
+          });
+      } catch (error) {
+          console.log(error);
+          this.setState({ dataLoaded: false });
+      }
+
+      //   return data;
+  }
+
+  //   generatePriceBreakupData(product) {
+  //       // eslint-disable-next-line prefer-const
+  //       let arr = {};
+  //       this.restApiCall(product.id).then(
+  //           /** @namespace myApp/Component/PriceBreakup/Container/PriceBreakupContainer/generatePriceBreakupData/restApiCall/then */
+  //           (value) => {
+  //               arr.data = value;
+  //               return arr;
+  //           }
+  //       );
+  //   }
+
+  //   generatePriceBreakupData2(product) {
+  //       // eslint-disable-next-line prefer-const
+  //       let arr = {};
+  //       arr.data = this.restApiCall(product.id);
+  //       return arr;
+  //   }
 
   containerProps() {
       const { areDetailsLoaded, product } = this.props;
@@ -187,7 +91,10 @@ export class PriceBreakupContainer extends PureComponent {
           areDetailsLoaded,
           attributesWithValues: getAttributesWithValues(product),
           productType: product.type_id,
-          priceBreakupValues: this.generatePriceBreakupData(product)
+          // eslint-disable-next-line react/destructuring-assignment
+          priceBreakupValues: this.state.data,
+          // eslint-disable-next-line react/destructuring-assignment
+          load: this.state.dataLoaded
       };
   }
 

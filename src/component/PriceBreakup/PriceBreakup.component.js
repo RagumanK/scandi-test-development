@@ -1,3 +1,5 @@
+/* eslint-disable no-unreachable */
+/* eslint-disable @scandipwa/scandipwa-guidelines/jsx-no-conditional */
 /* eslint-disable react/no-unused-prop-types */
 import PropTypes from 'prop-types';
 import { PureComponent } from 'react';
@@ -12,13 +14,15 @@ export class PriceBreakupComponent extends PureComponent {
       // eslint-disable-next-line react/boolean-prop-naming
       areDetailsLoaded: PropTypes.bool.isRequired,
       attributesWithValues: AttributeType.isRequired,
-      priceBreakupValues: PropTypes.isRequired
+      priceBreakupValues: PropTypes.isRequired,
+      load: PropTypes.isRequired,
+      productType: PropTypes.isRequired
+
   };
 
   // eslint-disable-next-line lines-between-class-members
-  renderMetalDetails2(data) {
+  renderDetails(data) {
       return data.map((group) => (
-        <table>
           <tr>
           <td>{ group.name }</td>
           <td>{ group.rate }</td>
@@ -27,13 +31,24 @@ export class PriceBreakupComponent extends PureComponent {
           <td>{ group.discount }</td>
           <td>{ group.fval }</td>
           </tr>
-        </table>
+      ));
+  }
+
+  renderDetailsBold(data) {
+      return data.map((group) => (
+          <tr>
+          <td><b>{ group.name }</b></td>
+          <td>{ group.rate }</td>
+          <td>{ group.weight }</td>
+          <td>{ group.value }</td>
+          <td>{ group.discount }</td>
+          <td>{ group.fval }</td>
+          </tr>
       ));
   }
 
   renderPriceDetails(label, value) {
       return (
-      <table>
         <tr>
           <td><b>{ label }</b></td>
           <td />
@@ -42,27 +57,18 @@ export class PriceBreakupComponent extends PureComponent {
           <td />
           <td>{ value }</td>
         </tr>
-      </table>
       );
   }
 
-  renderMetalDetails(attribs) {
-      return attribs.map((group) => (
-          <>
-            <td>{ group.name }</td>
-            <td>{ group.rate }</td>
-            <td>{ group.weight }</td>
-            <td>{ group.value }</td>
-          </>
-      ));
-  }
-
-  renderContent2() {
-      const { priceBreakupValues } = this.props;
-
+  renderContent() {
+      // eslint-disable-next-line react/destructuring-assignment
+      console.log(this.props, '3');
+      // eslint-disable-next-line react/destructuring-assignment
+      const priceBreakupValues = this.props.priceBreakupValues[0];
+      // eslint-disable-next-line react/destructuring-assignment
       return (
-          <>
           <table>
+            <thead>
             <tr>
               <th>Component</th>
               <th>Rate</th>
@@ -71,97 +77,84 @@ export class PriceBreakupComponent extends PureComponent {
               <th>Discount</th>
               <th>Final Value</th>
             </tr>
-          </table>
-          <br />
-          { priceBreakupValues.data.metal.values.length > 0 ? (
+            </thead>
+            <tbody>
+          { priceBreakupValues.metal.values.length > 0 ? (
               <>
-              <h3>Metals</h3>
-              { this.renderMetalDetails2(priceBreakupValues.data.metal.values) }
-              { this.renderPriceDetails('Total Metal Values', priceBreakupValues.data.metal.total_metal_value) }
+              <tr>
+                <td><b>Metals</b></td>
+                <td />
+                <td />
+                <td />
+                <td />
+                <td />
+              </tr>
+              { this.renderDetails(priceBreakupValues.metal.values) }
+              { this.renderPriceDetails('Total Metal Values', priceBreakupValues.metal.total_metal_value) }
               </>
-          ) : (
-              ''
-          ) }
-          { priceBreakupValues.data.diamond.values.length > 0 ? (
-              <>
-              <h3>Daimonds</h3>
-              { this.renderMetalDetails2(priceBreakupValues.data.diamond.values) }
-              { this.renderPriceDetails('Total Daimond Values', priceBreakupValues.data.metal.total_metal_value) }
-              </>
-          ) : (
-              ''
-          ) }
-          { priceBreakupValues.data.stone.values.length > 0 ? (
-              <>
-              <h3>Stones</h3>
-              { this.renderMetalDetails2(priceBreakupValues.data.stone.values) }
-              { this.renderPriceDetails('Total Stone Values', priceBreakupValues.data.metal.total_metal_value) }
-              </>
-          ) : (
-              ''
-          ) }
-          { this.renderPriceDetails('Making Charge', priceBreakupValues.data.making_charges) }
-          { this.renderPriceDetails('Subtotal', priceBreakupValues.data.subtotal) }
-          { this.renderPriceDetails('Grand Total', priceBreakupValues.data.grand_total) }
 
-          </>
+          ) : (
+              ''
+          ) }
+          { priceBreakupValues.diamond.values.length > 0 ? (
+              <>
+              <tr>
+                <td><b>Diamonds</b></td>
+                <td />
+                <td />
+                <td />
+                <td />
+                <td />
+              </tr>
+              { this.renderDetails(priceBreakupValues.diamond.values) }
+              { this.renderPriceDetails('Total Daimond Values', priceBreakupValues.diamond.total_dia_value) }
+              </>
+          ) : (
+              ''
+          ) }
+          { priceBreakupValues.stone.values.length > 0 ? (
+              <>
+              <tr>
+                <td><b>Stones</b></td>
+                <td />
+                <td />
+                <td />
+                <td />
+                <td />
+              </tr>
+              { this.renderDetails(priceBreakupValues.stone.values) }
+              { this.renderPriceDetails('Total Stone Values', priceBreakupValues.stone.total_stone_value) }
+              </>
+          ) : (
+              ''
+          ) }
+          { this.renderDetailsBold(priceBreakupValues.making_charges.values) }
+          { this.renderDetailsBold(priceBreakupValues.subtotal.values) }
+          { this.renderDetailsBold(priceBreakupValues.grand_total.values) }
+            </tbody>
+          </table>
       );
   }
 
-  renderContent() {
-      const { priceBreakupValues } = this.props;
-      if (priceBreakupValues.hasMetalValues) {
-          return (
-          <div block="PriceBreakup">
-            <h2>Hello World</h2>
-            <table>
-              <tr>
-                <td>Component</td>
-                <td>Rate</td>
-                <td>Approx. Weight</td>
-                <td>Value</td>
-                <td>Final Value</td>
-              </tr>
-              <tr>
-                { this.renderMetalDetails(priceBreakupValues.metalAttributes) }
-              </tr>
-            </table>
-            <h4>
-              Total Metal Values:
-              { ' ' }
-              { priceBreakupValues.totalMetalValue }
-            </h4>
-            <br />
-            <br />
-
-            <table>
-              <tr>
-                { this.renderMetalDetails(priceBreakupValues.diamondAttributes) }
-              </tr>
-              <h4>
-              Total Daimond Values:
-              { ' ' }
-              { priceBreakupValues.totalDaimondValue }
-              </h4>
-            </table>
-
-          </div>
-          );
-      }
-
+  renderContent2() {
       return (
-        <p />
+      <h1> Hello</h1>
       );
   }
 
   render() {
-      const { areDetailsLoaded } = this.props;
+      const { load } = this.props;
       console.log(this.props);
       // eslint-disable-next-line react/destructuring-assignment
-      if (!areDetailsLoaded) {
+      if (!load) {
           return null;
       }
+      // eslint-disable-next-line react/destructuring-assignment
+      if (this.props.productType === 'simple' && load) {
+          return this.renderContent();
+      }
 
+      // return this.renderContent();
       return this.renderContent2();
   }
 }
