@@ -32,60 +32,35 @@ export class PriceBreakupContainer extends PureComponent {
 
   componentDidMount() {
       // eslint-disable-next-line react/destructuring-assignment
-      this.restApiCall(this.props.product.id, this.props.product.type_id);
+      //   this.restApiCall(this.props.product.id, this.props.product.type_id);
+      if (this.props.product.type_id === 'simple') {
+          this.getPriceBreakup(true, this.props.product.attributes.sku);
+      }
   }
 
   componentDidUpdate(prevProps) {
       if (this.props.product.attributes.sku.attribute_value !== prevProps.product.attributes.sku.attribute_value) {
-          this.getConfigPriceBreakup(this.props.product.attributes.sku.attribute_value);
+          this.getPriceBreakup(false, this.props.product.attributes.sku.attribute_value);
       }
   }
 
   __construct(props) {
       super.__construct(props);
-      this.state = { dataLoaded: false, dataLoadedConfig: false, data: {} };
+      this.state = { dataLoaded: false, isLoad: false, data: {} };
   }
 
-  getConfigPriceBreakup(id) {
-      if (this.state.configData) {
-          // eslint-disable-next-line react/no-access-state-in-setstate
-          const data = [];
-          data.push(this.state.configData[0].variants[id]);
+  getPriceBreakup(isSimpleProduct, id) {
+      if (isSimpleProduct) {
           this.setState({
-              data,
-              dataLoadedConfig: true
+              isLoad: true,
+              data: this.props.data[0]
+          });
+      } else {
+          this.setState({
+              isLoad: true,
+              data: this.props.data[0].variants[id]
           });
       }
-  }
-
-  async restApiCall(id, type) {
-      try {
-          // eslint-disable-next-line quotes
-          const response = await fetch(`https://magento.aayke.com/rest/V1/pricebreakup?param[product_id]=${id}`, {
-              method: 'GET',
-              headers: { 'Content-Type': 'application/json' }
-          });
-          const data = await response.json();
-          if (type === 'simple') {
-              this.setState({
-              // eslint-disable-next-line react/no-unused-state
-                  dataLoaded: true,
-                  data
-              });
-          }
-          if (type === 'configurable') {
-              this.setState({
-                  // eslint-disable-next-line react/no-unused-state
-                  configData: data,
-                  dataLoaded: true
-              });
-          }
-      } catch (error) {
-          console.log(error);
-          this.setState({ dataLoaded: false });
-      }
-
-      //   return data;
   }
 
   containerProps() {
@@ -94,12 +69,8 @@ export class PriceBreakupContainer extends PureComponent {
           areDetailsLoaded,
           attributesWithValues: getAttributesWithValues(product),
           productType: product.type_id,
-          // eslint-disable-next-line react/destructuring-assignment
           priceBreakupValues: this.state.data,
-          // eslint-disable-next-line react/destructuring-assignment
-          load: this.state.dataLoaded,
-          // eslint-disable-next-line react/destructuring-assignment
-          loadConfig: this.state.dataLoadedConfig
+          isLoaded: this.state.isLoad
 
       };
   }

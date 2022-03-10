@@ -10,7 +10,8 @@
         "@tilework/mosaic-craco": "0.0.5",
         "google-maps-react": "^2.0.6",
         "page-builder": "file:packages/page-builder",
-        "postcss": "8.4.5"
+        "postcss": "8.4.5",
+        "scandipwa-cli": "^0.3.15"
     },
     "scandipwa": {
         "type": "theme",

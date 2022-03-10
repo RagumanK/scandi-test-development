@@ -1,7 +1,9 @@
+/* eslint-disable max-len */
 import { lazy, Suspense } from 'react';
 
 import Loader from 'Component/Loader/Loader.component';
 import { PRODUCT_ATTRIBUTES, PRODUCT_INFORMATION, PRODUCT_REVIEWS } from 'Route/ProductPage/ProductPage.config';
+import ProductActions from 'SourceComponent/ProductActions';
 import {
     ProductAttributes,
     ProductGallery,
@@ -65,12 +67,54 @@ export class ProductPageComponent extends SourceProductPage {
       }
   };
 
+  renderProductPageContent() {
+      const {
+          getLink,
+          dataSource,
+          areDetailsLoaded,
+          activeProduct,
+          setActiveProduct,
+          useEmptyGallerySwitcher,
+          parameters,
+          isVariant,
+          data
+      } = this.props;
+
+      return (
+          <>
+        <Suspense fallback={ <Loader /> }>
+          <ProductGallery
+            product={ activeProduct }
+            areDetailsLoaded={ areDetailsLoaded }
+            isWithEmptySwitcher={ useEmptyGallerySwitcher }
+            showLoader={ isVariant }
+          />
+        </Suspense>
+        <ProductActions
+          getLink={ getLink }
+          product={ dataSource }
+          parameters={ parameters }
+          areDetailsLoaded={ areDetailsLoaded }
+          setActiveProduct={ setActiveProduct }
+          data={ data }
+        />
+          </>
+      );
+  }
+
   renderPriceBreakupTab(key) {
-      const { activeProduct, areDetailsLoaded } = this.props;
+      const {
+          activeProduct, areDetailsLoaded, data
+      } = this.props;
 
       return (
       <Suspense fallback={ <Loader /> } key={ key }>
-        <PriceBreakup product={ activeProduct } areDetailsLoaded={ areDetailsLoaded } key={ key } />
+        <PriceBreakup
+          product={ activeProduct }
+          areDetailsLoaded={ areDetailsLoaded }
+          key={ key }
+          data={ data }
+        />
       </Suspense>
       );
   }

@@ -4,7 +4,6 @@
 import PropTypes from 'prop-types';
 import { PureComponent } from 'react';
 
-import Loader from 'Component/Loader/Loader.component';
 import { AttributeType } from 'Type/ProductList.type';
 
 import './PriceBreakup.style';
@@ -16,14 +15,13 @@ export class PriceBreakupComponent extends PureComponent {
       areDetailsLoaded: PropTypes.bool.isRequired,
       attributesWithValues: AttributeType.isRequired,
       priceBreakupValues: PropTypes.isRequired,
-      load: PropTypes.isRequired,
+      isLoaded: PropTypes.isRequired,
       loadConfig: PropTypes.isRequired,
       productType: PropTypes.isRequired
   };
 
   // eslint-disable-next-line lines-between-class-members
   renderDetails(data) {
-      console.log('dataaa', data);
       return data.map((group) => (
       <tr>
         <td>{ group.name }</td>
@@ -68,9 +66,14 @@ export class PriceBreakupComponent extends PureComponent {
 
   renderContent() {
       // eslint-disable-next-line react/destructuring-assignment
-      console.log(this.props, '3');
       // eslint-disable-next-line react/destructuring-assignment
-      const priceBreakupValues = this.props.priceBreakupValues[0];
+      const { priceBreakupValues } = this.props;
+      if (!priceBreakupValues) {
+          return (
+            <h4>Please select config</h4>
+          );
+      }
+
       // eslint-disable-next-line react/destructuring-assignment
       return (
       <table>
@@ -152,21 +155,13 @@ export class PriceBreakupComponent extends PureComponent {
   }
 
   render() {
-      const { load, loadConfig } = this.props;
+      const { isLoaded } = this.props;
       // eslint-disable-next-line react/destructuring-assignment
-      if (!load) {
-          return <Loader isLoading={ !load } />;
-      }
       // eslint-disable-next-line react/destructuring-assignment
-      if (this.props.productType === 'simple' && load) {
-          return this.renderContent();
-      }
-      // eslint-disable-next-line react/destructuring-assignment
-      if (this.props.productType === 'configurable' && loadConfig) {
+      if (isLoaded) {
           return this.renderContent();
       }
 
-      // return this.renderContent();
       return this.renderContent2();
   }
 }
