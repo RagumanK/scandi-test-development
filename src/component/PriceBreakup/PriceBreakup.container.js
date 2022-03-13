@@ -35,6 +35,8 @@ export class PriceBreakupContainer extends PureComponent {
       //   this.restApiCall(this.props.product.id, this.props.product.type_id);
       if (this.props.product.type_id === 'simple') {
           this.getPriceBreakup(true, this.props.product.attributes.sku);
+      } else {
+          this.getPriceBreakup(false, this.props.product.variants[0].sku);
       }
   }
 

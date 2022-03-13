@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-unreachable */
 /* eslint-disable @scandipwa/scandipwa-guidelines/jsx-no-conditional */
 /* eslint-disable react/no-unused-prop-types */
@@ -25,11 +26,11 @@ export class PriceBreakupComponent extends PureComponent {
       return data.map((group) => (
       <tr>
         <td>{ group.name }</td>
-        <td>{ group.rate }</td>
+        <td>{ parseInt(group.rate, 10).toLocaleString('en-IN') }</td>
         <td>{ group.weight }</td>
-        <td>{ group.value }</td>
+        <td>{ group.value.toLocaleString('en-IN') }</td>
         <td>{ group.discount }</td>
-        <td>{ group.fval }</td>
+        <td>{ group.fval.toLocaleString('en-IN') }</td>
       </tr>
       ));
   }
@@ -40,11 +41,11 @@ export class PriceBreakupComponent extends PureComponent {
         <td>
           <b>{ group.name }</b>
         </td>
-        <td>{ group.rate }</td>
+        <td>{ group.rate ? parseInt(group.rate, 10).toLocaleString('en-IN') : '' }</td>
         <td>{ group.weight }</td>
-        <td>{ group.value }</td>
+        <td>{ group.value ? parseInt(group.value, 10).toLocaleString('en-IN') : '' }</td>
         <td>{ group.discount }</td>
-        <td>{ group.fval }</td>
+        <td>{ group.fval ? parseInt(group.fval, 10).toLocaleString('en-IN') : '' }</td>
       </tr>
       ));
   }
@@ -57,9 +58,9 @@ export class PriceBreakupComponent extends PureComponent {
         </td>
         <td />
         <td />
-        <td>{ value }</td>
+        <td>{ parseInt(value, 10).toLocaleString('en-IN') }</td>
         <td />
-        <td>{ value }</td>
+        <td>{ parseInt(value, 10).toLocaleString('en-IN') }</td>
       </tr>
       );
   }

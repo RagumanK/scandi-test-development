@@ -21,6 +21,8 @@ export class ProductActionsContainer extends SourceProductActionsContainer {
     componentDidMount() {
         if (this.props.product.type_id === 'simple') {
             this.setCalculatedPrice(true, this.props.product.attributes.sku);
+        } else {
+            this.setCalculatedPrice(false, this.props.product.variants[0].sku);
         }
     }
 
@@ -45,12 +47,12 @@ export class ProductActionsContainer extends SourceProductActionsContainer {
         if (isSimpleProduct) {
             this.setState({
                 isPriceSet: true,
-                customPrice: this.props.data[0].grand_total.values[0].value
+                customPrice: this.props.data[0].grand_total.values[0].value.toLocaleString('en-IN')
             });
         } else {
             this.setState({
                 isPriceSet: true,
-                customPrice: this.props.data[0].variants[id].grand_total.values[0].value
+                customPrice: this.props.data[0].variants[id].grand_total.values[0].value.toLocaleString('en-IN')
             });
         }
     }

@@ -1,8 +1,10 @@
 /* eslint-disable prefer-const */
 /* eslint-disable @scandipwa/scandipwa-guidelines/derived-class-names */
+import PRODUCT_TYPE from 'Component/Product/Product.config';
 import {
     Product as SourceProduct
 } from 'SourceComponent/Product/Product.component';
+import ProductConfigurableAttributes from 'SourceComponent/ProductConfigurableAttributes';
 import ProductPrice from 'SourceComponent/ProductPrice';
 
 /** @namespace myApp/Component/Product/Component */
@@ -97,6 +99,37 @@ export class Product extends SourceProduct {
           mix={ { block: this.className, elem: 'Price' } }
         />
       </div>
+        );
+    }
+
+    renderConfigurableOptions() {
+        const {
+            setActiveProduct,
+            setFirstConfig,
+            parameters,
+            product: { type_id: type, variants = {} },
+            inStock
+        } = this.props;
+
+        if (type !== PRODUCT_TYPE.configurable) {
+            return null;
+        }
+
+        return (
+          <div block="ProductActions" elem="AttributesWrapper">
+            <ProductConfigurableAttributes
+              // eslint-disable-next-line no-magic-numbers
+              numberOfPlaceholders={ [2, 4] }
+              mix={ { block: this.className, elem: 'Attributes' } }
+              parameters={ parameters }
+              variants={ variants }
+              updateConfigurableVariant={ setActiveProduct }
+              setFirstConfig={ setFirstConfig }
+              configurable_options={ this.getConfigurableAttributes() }
+              isContentExpanded
+              inStock={ inStock }
+            />
+          </div>
         );
     }
 }
